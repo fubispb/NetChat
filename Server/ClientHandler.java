@@ -4,12 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 
-    public class ClientHandler {
+public class ClientHandler {
         private Socket socket;
         private DataOutputStream out;
         private DataInputStream in;
         private Server server;
+        private String nick;
 
         public ClientHandler(Server server, Socket socket) {
             try {
@@ -24,14 +26,31 @@ import java.net.Socket;
                         try {
                             while (true) {
                                 String str = in.readUTF();
+                                if (str.startsWith("/auth")){
+                                    String[] tokens = str.split(" ");
+                                    String newNick = AuthService.getNickByLoginAndPass(tokens[1], tokens[2]);
+                                    if(newNick != null) {
+                                        sendMsg("/authok");
+                                        nick = newNick;
+                                        server.subscribe(ClientHandler.this);
+                                        break;
+                                    }else {
+                                        sendMsg("Неверный логин/пароль!");
+                                    }
+
+                                }
+                            }
+
+                            while (true) {
+                                String str = in.readUTF();
                                 System.out.println("Client " + str);
                                 if (str.equals("/end")) {
                                     out.writeUTF("/serverClosed");
                                     break;
                                 }
-                                server.broadcastMsg(str);
+                                server.broadcastMsg(nick + ": " + str);
                             }
-                        } catch (IOException e) {
+                        } catch (IOException | SQLException e) {
                             e.printStackTrace();
                         } finally {
                             try {
@@ -66,4 +85,3 @@ import java.net.Socket;
             }
         }
     }
-
