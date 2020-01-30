@@ -1,0 +1,10 @@
+#btn1 {
+    -fx-font: bold italic 10pt "Arial";
+    -fx-effect: dropshadow( one-pass-box , black , 8 , 0.0 , 2 , 0 );
+}
+#textField {
+    -fx-background-color: linear-gradient(from 25px 25px to 250px 250px, #f8f7ff, #b7b8b7);
+}
+#textArea .content{
+    -fx-background-color: linear-gradient(from 25px 25px to 250px 250px, #f8f7ff, #b7b8b7);
+}
