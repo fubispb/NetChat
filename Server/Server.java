@@ -25,12 +25,10 @@ public class Server {
             AuthService.connect();
             server = new ServerSocket(8189);
             System.out.println("Сервер запущен!");
-
             while (true) {
                 socket = server.accept();
                 new ClientHandler(this, socket);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -50,16 +48,16 @@ public class Server {
     }
 
     public void broadcastMsg(ClientHandler reciever, String msg) {
-        for (ClientHandler o: clients) {
-            if (!o.checkBlackList(reciever.getNick())){
+        for (ClientHandler o : clients) {
+            if (!o.checkBlackList(reciever.getNick())) {
                 o.sendMsg(reciever.getNick() + ": " + msg);
             }
         }
     }
 
-    public void sendPrivateMessage(ClientHandler sender, String reciever, String msg){
-        for (ClientHandler o: clients) {
-            if (o.getNick().equals(reciever)){
+    public void sendPrivateMessage(ClientHandler sender, String reciever, String msg) {
+        for (ClientHandler o : clients) {
+            if (o.getNick().equals(reciever)) {
                 o.sendMsg("Отправитель " + sender.getNick() + ": " + msg);
                 sender.sendMsg("Получателю " + reciever + ": " + msg);
                 return;
@@ -68,11 +66,11 @@ public class Server {
         sender.sendMsg("Клиент с ником " + reciever + " не найден в чате.");
     }
 
-    public void subscribe(ClientHandler client){
+    public void subscribe(ClientHandler client) {
         clients.add(client);
     }
 
-    public void unsubscribe(ClientHandler client){
+    public void unsubscribe(ClientHandler client) {
         clients.remove(client);
     }
 

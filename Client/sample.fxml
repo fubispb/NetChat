@@ -8,7 +8,9 @@
 
 <?import javafx.scene.control.PasswordField?>
 <VBox fx:controller="NetChat.Client.Controller" xmlns:fx="http://javafx.com/fxml" alignment="center">
-    <stylesheets><URL value="@/NetChat/Client/css/Style.css"/></stylesheets>
+    <stylesheets>
+        <URL value="@/NetChat/Client/css/Style.css"/>
+    </stylesheets>
     <HBox fx:id="upperPanel">
         <TextField HBox.hgrow="ALWAYS" promptText="Логин" fx:id="loginfield"/>
         <PasswordField promptText="Пароль" fx:id="passwordfield" onAction="#tryToAuth"/>

@@ -17,7 +17,7 @@ public class AuthService {
         }
     }
 
-    public static void disconnect(){
+    public static void disconnect() {
         try {
             connection.close();
         } catch (SQLException e) {
@@ -25,10 +25,10 @@ public class AuthService {
         }
     }
 
-    public static String getNickByLoginAndPass(String login, String pass) throws SQLException {
-        String qry = String.format("SELECT nickname FROM main_table where login = '%s' and password = '%s'", login, pass);
+    public static String getNickByLoginAndPass(String login, int pass) throws SQLException {
+        String qry = String.format("SELECT nick FROM main_tbl where login = '%s' and password = %s", login, pass);
         ResultSet rs = statement.executeQuery(qry);
-        if (rs.next()){
+        if (rs.next()) {
             return rs.getString(1);
         }
         return null;

@@ -13,7 +13,7 @@ public class Main extends Application {
     //Controller controller;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
         Parent root = loader.load(getClass().getResource("/NetChat/Client/sample.fxml"));
         //controller = loader.getController();
