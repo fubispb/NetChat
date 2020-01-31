@@ -129,4 +129,16 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
+    //public void Dispose() {
+    //    try {
+    //        out.writeUTF("/end");
+    //    } catch (IOException e) {
+    //        e.printStackTrace();
+    //    }
+    //}
+
+
+
+
 }

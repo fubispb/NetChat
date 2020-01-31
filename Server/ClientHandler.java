@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientHandler {
         private Socket socket;
@@ -12,9 +14,11 @@ public class ClientHandler {
         private DataInputStream in;
         private Server server;
         private String nick;
+        List<String> blacklist;
 
         public ClientHandler(Server server, Socket socket) {
             try {
+                this.blacklist = new ArrayList<>();
                 this.socket = socket;
                 this.server = server;
                 this.in = new DataInputStream(socket.getInputStream());
@@ -30,25 +34,35 @@ public class ClientHandler {
                                     String[] tokens = str.split(" ");
                                     String newNick = AuthService.getNickByLoginAndPass(tokens[1], tokens[2]);
                                     if(newNick != null) {
-                                        sendMsg("/authok");
-                                        nick = newNick;
-                                        server.subscribe(ClientHandler.this);
-                                        break;
+                                        if (!server.isOnline(newNick)) {
+                                            sendMsg("/authok");
+                                            nick = newNick;
+                                            server.subscribe(ClientHandler.this);
+                                            break;
+                                        }else sendMsg("Учётная запись уже используется.");
                                     }else {
                                         sendMsg("Неверный логин/пароль!");
                                     }
-
                                 }
                             }
-
                             while (true) {
                                 String str = in.readUTF();
-                                System.out.println("Client " + str);
-                                if (str.equals("/end")) {
-                                    out.writeUTF("/serverClosed");
-                                    break;
-                                }
-                                server.broadcastMsg(nick + ": " + str);
+                                if(str.startsWith("/")) {
+                                    if (str.equals("/end")) {
+                                        out.writeUTF("/serverClosed");
+                                        break;
+                                    }
+                                    if (str.startsWith("/w ")) {
+                                        String[] tokens = str.split(" ", 3);
+                                        server.sendPrivateMessage(ClientHandler.this, tokens[1], tokens[2]);
+                                    }
+                                    if (str.equals("/blacklist ")){
+                                        String[] tokens = str.split(" ");
+                                        blacklist.add(tokens[1]);
+                                        sendMsg("Вы добавили " + tokens[1] + " в чёрный список.");
+                                    }
+
+                                }else server.broadcastMsg(ClientHandler.this, str);
                             }
                         } catch (IOException | SQLException e) {
                             e.printStackTrace();
@@ -77,11 +91,19 @@ public class ClientHandler {
             }
         }
 
+        public String getNick(){
+            return nick;
+        }
+
         public void sendMsg(String msg) {
             try {
                 out.writeUTF(msg);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public boolean checkBlackList(String nick){
+            return blacklist.contains(nick);
         }
     }

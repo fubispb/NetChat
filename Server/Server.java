@@ -1,5 +1,6 @@
 package NetChat.Server;
 
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -7,11 +8,13 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 
 public class Server {
     private Vector<ClientHandler> clients;
+
 
     public Server() throws SQLException {
         clients = new Vector<>();
@@ -20,8 +23,6 @@ public class Server {
 
         try {
             AuthService.connect();
-            //String test = AuthService.getNickByLoginAndPass("login2", "pass2");
-            //System.out.println(test);
             server = new ServerSocket(8189);
             System.out.println("Сервер запущен!");
 
@@ -48,10 +49,23 @@ public class Server {
         }
     }
 
-    public void broadcastMsg(String msg) {
+    public void broadcastMsg(ClientHandler reciever, String msg) {
         for (ClientHandler o: clients) {
-            o.sendMsg(msg);
+            if (!o.checkBlackList(reciever.getNick())){
+                o.sendMsg(reciever.getNick() + ": " + msg);
+            }
         }
+    }
+
+    public void sendPrivateMessage(ClientHandler sender, String reciever, String msg){
+        for (ClientHandler o: clients) {
+            if (o.getNick().equals(reciever)){
+                o.sendMsg("Отправитель " + sender.getNick() + ": " + msg);
+                sender.sendMsg("Получателю " + reciever + ": " + msg);
+                return;
+            }
+        }
+        sender.sendMsg("Клиент с ником " + reciever + " не найден в чате.");
     }
 
     public void subscribe(ClientHandler client){
@@ -60,5 +74,15 @@ public class Server {
 
     public void unsubscribe(ClientHandler client){
         clients.remove(client);
+    }
+
+
+    public boolean isOnline(String nickname) {
+        for (ClientHandler o : clients) {
+            if (o.getNick().equals(nickname)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
