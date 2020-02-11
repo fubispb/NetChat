@@ -1,4 +1,4 @@
-package NetChat.Server;
+package Server;
 
 import java.sql.*;
 

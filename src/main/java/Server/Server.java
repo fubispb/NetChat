@@ -1,15 +1,9 @@
-package NetChat.Server;
+package Server;
 
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Vector;
 
 public class Server {

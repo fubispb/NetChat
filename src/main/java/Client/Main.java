@@ -1,8 +1,7 @@
-package NetChat.Client;
+package Client;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,19 +13,19 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader();
-        Parent root = loader.load(getClass().getResource("/NetChat/Client/sample.fxml"));
+        //FXMLLoader loader = new FXMLLoader();
+        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         //controller = loader.getController();
         primaryStage.setTitle("NetChat");
         Scene scene = new Scene(root, 350, 375);
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        //primaryStage.setOnCloseRequest(event -> {
-        //    controller.Dispose();
-        //    Platform.exit();
-        //    System.exit(0);
-        //});
+       //primaryStage.setOnCloseRequest(event -> {
+       //    controller.Dispose();
+       //    Platform.exit();
+       //    System.exit(0);
+       //});
     }
 
     public static void main(String[] args) {
